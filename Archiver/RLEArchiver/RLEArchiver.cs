@@ -1,27 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Archiver.BinaryArchiver
+﻿namespace Archiver.BinaryArchiver
 {
-    internal class BinaryArchiver : IArchiver
+    internal class RLEArchiver : IArchiver
     {
-        public static void Zip(string FilePath)
+        public static void Compress(string FilePath)
         {
             FileStream? fs = null; //исходный файл
             FileStream? rs = null; //архив
-            string ZipFilePath = FilePath + ".zip";
+            string archiveFilePath = FilePath + ".rle";
             try
             {
-                if (File.Exists(ZipFilePath))
-                    File.Delete(ZipFilePath);
-                string Format = FilePath.Substring(FilePath.LastIndexOf('.') + 1); //получаем формат файла
+                if (File.Exists(archiveFilePath))
+                    File.Delete(archiveFilePath);
                 fs = new FileStream(FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-                rs = new FileStream(ZipFilePath, FileMode.CreateNew);
-                //сначала сохраним формат исходного файла
-                rs.WriteByte((byte)Format.Length);
-                for (int i = 0; i < Format.Length; ++i)
-                    rs.WriteByte((byte)Format[i]);
+                rs = new FileStream(archiveFilePath, FileMode.CreateNew);
 
                 List<byte> Bt = new List<byte>();
                 List<byte> nBt = new List<byte>();
@@ -95,23 +86,26 @@ namespace Archiver.BinaryArchiver
                 if (rs != null) rs.Close();
             }
         }
-        public static void UnZip(string ZipFilePath)
+        public static void Decompress(string archiveFilePath)
         {
-            string UnZipedFilePath = ZipFilePath[0..^4];
+            if (!File.Exists(archiveFilePath))
+                throw new FileNotFoundException("File not found", archiveFilePath);
 
-            if (!File.Exists(ZipFilePath)) return;
+            string UnarchivedFilePath = archiveFilePath.EndsWith(".rle")
+                                             ? archiveFilePath[..^4]
+                                             : throw new Exception("Unsupported file format");
+
+            string extension = Path.GetExtension(UnarchivedFilePath);
+            string dataFilePath = UnarchivedFilePath.Substring(0, UnarchivedFilePath.Length - extension.Length) + "-RLE" + extension;
+
             FileStream? fs = null;
             FileStream? rs = null;
             try
             {
-                string Format = ".";
-                fs = new FileStream(ZipFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-                int FormatLen = fs.ReadByte();
-                for (int i = 0; i < FormatLen; ++i)
-                    Format += (char)fs.ReadByte();
-                if (File.Exists(UnZipedFilePath + Format))
-                    File.Delete(UnZipedFilePath + Format);
-                rs = new FileStream(UnZipedFilePath + Format, FileMode.CreateNew);
+                fs = new FileStream(archiveFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                if (File.Exists(dataFilePath))
+                    File.Delete(dataFilePath);
+                rs = new FileStream(dataFilePath, FileMode.CreateNew);
                 while (fs.Position < fs.Length)
                 {
                     int Bt = fs.ReadByte();

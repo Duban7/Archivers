@@ -2,7 +2,7 @@
 {
     public interface IArchiver
     {
-        public static abstract void Zip(string FilePath);
-        public static abstract void UnZip(string FilePath);
+        public static abstract void Compress(string FilePath);
+        public static abstract void Decompress(string ArchivePath);
     }
 }
