@@ -11,15 +11,15 @@ if (string.IsNullOrWhiteSpace(filePath))
     return;
 }
 
-Console.WriteLine("\n=== Archiver1 ===");
+Console.WriteLine("\n=== RLE Archiver ===");
 RLEArchiver.Compress(filePath);
 RLEArchiver.Decompress(filePath+".rle");
 
-Console.WriteLine("\n=== Archiver2 ===");
-LZ78FileCompressor.Compress(filePath);
-LZ78FileCompressor.Decompress(filePath+".lz78");
+Console.WriteLine("\n=== LZ78 Archiver ===");
+LZ78Archiver.Compress(filePath);
+LZ78Archiver.Decompress(filePath+".lz78");
 
-Console.WriteLine("\n=== Archiver3 ===");
+Console.WriteLine("\n=== Huffman Archiver ===");
 HuffmanArchiver.Compress(filePath);
 HuffmanArchiver.Decompress(filePath+".haff");
 

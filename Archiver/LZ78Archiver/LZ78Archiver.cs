@@ -1,6 +1,6 @@
 ﻿using Archiver;
 
-public class LZ78FileCompressor : IArchiver
+public class LZ78Archiver : IArchiver
 {
     private struct Entry
     {
@@ -14,9 +14,6 @@ public class LZ78FileCompressor : IArchiver
         }
     }
 
-    // ---------------------------
-    //          СЖАТИЕ
-    // ---------------------------
     public static void Compress(string filePath)
     {
         if (!File.Exists(filePath))
@@ -53,15 +50,12 @@ public class LZ78FileCompressor : IArchiver
         {
             foreach (var e in entries)
             {
-                fs.Write(e.Index); // 4 байта
-                fs.Write(e.Symbol); // 1 байт
+                fs.Write(e.Index); 
+                fs.Write(e.Symbol);
             }
         }
     }
 
-    // ---------------------------
-    //       ДЕАРХИВАЦИЯ
-    // ---------------------------
     public static void Decompress(string archivePath)
     {
         if (!File.Exists(archivePath))
