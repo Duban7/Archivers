@@ -1,6 +1,6 @@
 ﻿namespace Archivers.HuffmanArchiver
 {
-    public class HuffmanArchiver
+    public class HuffmanArchiver : IArchiver
     {
         // Метод сжатия файла с использованием алгоритма Хаффмана
         public static void Compress(string filePath)
